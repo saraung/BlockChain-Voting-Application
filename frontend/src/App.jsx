@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { Box } from '@mui/material';
+import { Route, Routes } from 'react-router-dom';
+import NavBar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Results from './pages/Results';
+import Election from './pages/Admin/Election';
+import Vote from './pages/User/Vote';
+import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Box sx={{ display: 'flex' }}>
+      {/* Sidebar */}
+      <NavBar />
+      <ToastContainer/>
+
+      {/* Main Content */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          padding: 3,
+          marginLeft: '0px', // Adjust based on the NavBar width
+        }}
+      >
+        <Routes>
+          {/* Public Routes: accessible by anyone */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/results" element={<Results />} />
+
+          {/* Admin Routes: accessible only by admins */}
+          <Route path="/election" element={<AdminRoute element={<Election />} />} />
+
+          {/* User Routes: accessible only by authenticated users */}
+          <Route path="/vote" element={<PrivateRoute element={<Vote />} />} />
+        </Routes>
+      </Box>
+    </Box>
+  );
 }
 
-export default App
+export default App;
