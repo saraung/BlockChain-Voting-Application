@@ -5,8 +5,9 @@ import { extractRevertReason } from '../utils/errorUtils.js'
 import asyncHandler from '../middlewares/asyncHandler.js';
 import Candidate from '../models/candidateModel.js';
 
+
 const contractAddress=process.env.CONTRACT_ADDRESS
-const adminAddress=process.env.ADMIN_ADDRESS
+// const adminAddress=process.env.ADMIN_ADDRESS
 
 
 const votingContract = getContractInstance(votingABI.abi, contractAddress);
@@ -17,8 +18,14 @@ BigInt.prototype['toJSON'] = function () {
   };
 
   export const startVoting = async (req, res) => {
-    const { durationInSeconds, adminAddress } = req.body;  // You only need durationInSeconds and adminAddress
+
+    console.log(req.body);
+    let { durationInSeconds, adminAddress } = req.body;  // You only need durationInSeconds and adminAddress
     
+    const checksumAddress = web3.utils.toChecksumAddress(adminAddress);
+    console.log('Checksum Address:', checksumAddress);
+    adminAddress = checksumAddress;
+
     try {
       // Ensure admin address is valid
       const accounts = await web3.eth.getAccounts();
@@ -33,7 +40,7 @@ BigInt.prototype['toJSON'] = function () {
       // Send the transaction to start voting
       const tx = await votingContract.methods
         .startVoting(candidateNames, durationInSeconds)
-        .send({ from: adminAddress });
+        .send({ from: adminAddress,gas: 5000000 });
   
       console.log('Transaction successful:', tx);
       res.send({ message: 'Voting started successfully!' });
@@ -52,6 +59,7 @@ BigInt.prototype['toJSON'] = function () {
 
 export const stopVoting=async(req,res) => {
      try {
+      const {adminAddress } = req.body; 
         const estimatedGas = await votingContract.methods.stopVoting().estimateGas({ from: adminAddress });
     console.log(`Estimated Gas: ${estimatedGas}`);
     
@@ -149,17 +157,31 @@ export const getElectionResults=async(req,res)=>{
       }
 }
 
-
-export const getVotingStatus =async(req, res) => {
+export const getVotingStatus = async (req, res) => {
   try {
-    const status = await votingContract.methods.isVotingActiveStatus().call();
-    const timeRemaining = await votingContract.methods.getTimeRemaining().call();
-    res.json({ status, timeRemaining });
+    const isVotingActive = await votingContract.methods.isVotingActiveStatus().call();
+    if (!isVotingActive) {
+      return res.json({ status: false, timeRemaining: 0 });
+    }
+
+    const startTime = await votingContract.methods.startTime().call();
+    const duration = await votingContract.methods.votingDuration().call();
+    const currentTime = BigInt(Math.floor(Date.now() / 1000)); // Current time in seconds, as BigInt
+
+    const elapsedTime = currentTime - BigInt(startTime); // Explicit conversion to BigInt
+    const timeRemaining = BigInt(duration) - elapsedTime; // Explicit conversion to BigInt
+
+    res.json({
+      status: true,
+      timeRemaining: timeRemaining > 0n ? timeRemaining : 0n, // Use BigInt for comparison
+    });
   } catch (error) {
-    console.error('Error fetching voting status:', error);
+    console.error("Error fetching voting status:", error);
     res.status(500).send(`Error fetching voting status: ${error.message}`);
   }
-}
+};
+
+
 
 
 export const getVotesForSingleCandidate = async (req,res)=>{

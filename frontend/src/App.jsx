@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import NavBar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -10,6 +10,8 @@ import Vote from './pages/User/Vote';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import { ToastContainer } from 'react-toastify';
+import Candidates from './pages/Admin/Candidates';
+import Voters from './pages/User/Voters';
 
 function App() {
   return (
@@ -17,6 +19,7 @@ function App() {
       {/* Sidebar */}
       <NavBar />
       <ToastContainer/>
+
 
       {/* Main Content */}
       <Box
@@ -27,18 +30,25 @@ function App() {
           marginLeft: '0px', // Adjust based on the NavBar width
         }}
       >
-        <Routes>
-          {/* Public Routes: accessible by anyone */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/results" element={<Results />} />
+       <Routes>
+  {/* Public Routes: accessible by anyone */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/" element={<Home />} />
+  <Route path="/results" element={<Results />} />
 
-          {/* Admin Routes: accessible only by admins */}
-          <Route path="/election" element={<AdminRoute element={<Election />} />} />
+  {/* Admin Routes: accessible only by admins */}
+  <Route element={<AdminRoute />}>
+    <Route path="/election" element={<Election />} />
+    <Route path="/candidates" element={<Candidates />} />
+  </Route>
 
-          {/* User Routes: accessible only by authenticated users */}
-          <Route path="/vote" element={<PrivateRoute element={<Vote />} />} />
-        </Routes>
+  {/* User Routes: accessible only by authenticated users */}
+  <Route element={<PrivateRoute />}>
+    <Route path="/vote" element={<Vote />} />
+    <Route path="/voters" element={<Voters />} />
+  </Route>
+</Routes>
+
       </Box>
     </Box>
   );

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios
 import {
   Box,
   Card,
@@ -12,35 +13,6 @@ import {
 } from '@mui/material';
 import { FaRegCalendarAlt, FaVoteYea } from 'react-icons/fa';
 
-// Dummy data
-const resultsData = [
-  {
-    candidates: ['Alice', 'Bob', 'Charlie'],
-    votes: ['2', '1', '0'],
-    endTime: '1736747116',
-  },
-  {
-    candidates: ['ney', 'rono', 'messi'],
-    votes: ['0', '1', '0'],
-    endTime: '1736747144',
-  },
-  {
-    candidates: ['ney', 'rono', 'messi'],
-    votes: ['0', '1', '0'],
-    endTime: '1736747306',
-  },
-  {
-    candidates: ['ney', 'rono', 'messi'],
-    votes: ['0', '1', '0'],
-    endTime: '1736747405',
-  },
-  {
-    candidates: ['Alice', 'Maya'],
-    votes: ['0', '0'],
-    endTime: '1736755681',
-  },
-];
-
 // Helper function to convert Unix timestamp to readable date
 const formatDate = (timestamp) => {
   const date = new Date(timestamp * 1000);
@@ -48,6 +20,47 @@ const formatDate = (timestamp) => {
 };
 
 const Results = () => {
+  const [resultsData, setResultsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch data from the API
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const response = await axios.get('http://localhost:4777/api/blocks/voting-sessions', {
+          withCredentials: true, // Include credentials if necessary
+        });
+
+        // Sort results by endTime in descending order
+        const sortedData = response.data.sort((a, b) => b.endTime - a.endTime);
+        setResultsData(sortedData);
+      } catch (err) {
+        setError(err.response ? err.response.data.message : err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, []);
+
+  if (loading) {
+    return (
+      <Typography variant="h6" align="center" sx={{ marginTop: 3 }}>
+        Loading results...
+      </Typography>
+    );
+  }
+
+  if (error) {
+    return (
+      <Typography variant="h6" align="center" sx={{ marginTop: 3, color: 'red' }}>
+        {error}
+      </Typography>
+    );
+  }
+
   return (
     <Box sx={{ padding: 3 }}>
       <Typography variant="h4" align="center" gutterBottom>

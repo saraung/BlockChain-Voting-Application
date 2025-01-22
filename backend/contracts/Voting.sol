@@ -76,6 +76,18 @@ contract Voting {
         // Activate voting
         isVotingActive = true;
 
+        // Emit debug message with voting start time and end time
+        emit Debug(
+            string(
+                abi.encodePacked(
+                    "Voting started. Current time: ",
+                    uintToString(block.timestamp),
+                    ", Voting ends at: ",
+                    uintToString(votingEndTime)
+                )
+            )
+        );
+
         // Clear previous voting history before starting a new session
         clearVotingHistory();
 
@@ -152,7 +164,7 @@ contract Voting {
         if (block.timestamp > votingEndTime) {
             return 0; // Voting has ended
         }
-        return votingEndTime - block.timestamp;
+        return votingEndTime - block.timestamp;  // Current time - votingEndTime
     }
 
     // Get voting status (active or not)
@@ -172,9 +184,8 @@ contract Voting {
     }
 
     function votingHistoryLength() external view returns (uint) {
-    return votingHistory.length;
-}
-
+        return votingHistory.length;
+    }
 
     // Utility function to convert address to string for logging purposes
     function addressToString(address _addr) internal pure returns (string memory) {

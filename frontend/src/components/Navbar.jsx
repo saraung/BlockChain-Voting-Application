@@ -128,9 +128,28 @@ const Navbar = () => {
                 },
               }}
             >
-              <ListItemText primary="Votes" />
+              <ListItemText primary="Cast Votes" />
+            </ListItem>
+            <ListItem
+              component={Link}
+              to="/voters"
+              button
+              selected={location.pathname === "/voters"}
+              sx={{
+                color: "white",
+                "&.Mui-selected": {
+                  backgroundColor: "#ff5722",
+                  color: "#ffffff",
+                },
+                "&:hover": {
+                  backgroundColor: "#333547",
+                },
+              }}
+            >
+              <ListItemText primary="Manage Voters" />
             </ListItem>
             {userInfo.isAdmin && (
+              <>
               <ListItem
                 component={Link}
                 to="/election"
@@ -147,8 +166,27 @@ const Navbar = () => {
                   },
                 }}
               >
-                <ListItemText primary="Election" />
+                <ListItemText primary="Start Election" />
               </ListItem>
+              <ListItem
+                component={Link}
+                to="/candidates"
+                button
+                selected={location.pathname === "/candidates"}
+                sx={{
+                  color: "white",
+                  "&.Mui-selected": {
+                    backgroundColor: "#ff5722",
+                    color: "#ffffff",
+                  },
+                  "&:hover": {
+                    backgroundColor: "#333547",
+                  },
+                }}
+              >
+                <ListItemText primary="Manage Candidates" />
+              </ListItem>
+              </>
             )}
           </>
         )}

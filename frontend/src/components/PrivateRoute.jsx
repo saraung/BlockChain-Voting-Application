@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const PrivateRoute = () => {
+const PrivateRoute = ({ children }) => {
   const { userInfo } = useSelector((state) => state.auth);
 
-  // If user is logged in, allow access to the route
-  return userInfo ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!userInfo) return <Navigate to="/login" replace />;
+  return children || <Outlet />;
 };
 
 export default PrivateRoute;

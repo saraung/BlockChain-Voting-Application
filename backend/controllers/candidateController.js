@@ -72,6 +72,11 @@ export const deleteCandidate = asyncHandler(async (req, res) => {
 
 // Get all candidates
 export const getAllCandidates = asyncHandler(async (req, res) => {
+   try {
     const candidates = await Candidate.find();
     res.status(200).json(candidates);
+   } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching candidates', error });
+   }
 });

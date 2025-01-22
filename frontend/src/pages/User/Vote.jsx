@@ -8,14 +8,9 @@ const Vote = () => {
   };
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Vote for Your Favorite Candidate
-      </Typography>
-      <Button variant="contained" color="primary" onClick={castVote}>
-        Cast Vote
-      </Button>
-    </Box>
+    <>
+    <h1>HELLO SHHSHSH</h1>
+    </>
   );
 };
 
