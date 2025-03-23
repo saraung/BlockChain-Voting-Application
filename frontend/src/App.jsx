@@ -12,6 +12,7 @@ import AdminRoute from './components/AdminRoute';
 import { ToastContainer } from 'react-toastify';
 import Candidates from './pages/Admin/Candidates';
 import Voters from './pages/User/Voters';
+import FaceAuth from './pages/User/FaceAuth';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
   {/* User Routes: accessible only by authenticated users */}
   <Route element={<PrivateRoute />}>
     <Route path="/vote" element={<Vote />} />
+    <Route path="/face" element={<FaceAuth />} />
     <Route path="/voters" element={<Voters />} />
   </Route>
 </Routes>

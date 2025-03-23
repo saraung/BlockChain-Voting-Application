@@ -9,22 +9,54 @@ import {
   Card,
   CardMedia,
   CardContent,
-  CardActions,
-  Tooltip,
   Paper,
   Divider,
 } from "@mui/material";
+import { styled } from '@mui/material/styles'; // Import styled from @mui/material/styles
 import { toast } from "react-toastify";
 import axios from "axios";
 
+// Styled component for the main container
+const ElectionContainer = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+  backgroundColor: "#e6f7ff", // Light blue background
+  borderRadius: theme.spacing(2),
+}));
+
+// Styled component for the paper
+const ElectionPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  boxShadow: theme.shadows[5], // Increased shadow for depth
+  borderRadius: theme.spacing(2),
+}));
+
+// Styled component for the section title
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  variant: "h5",
+  gutterBottom: true,
+  color: theme.palette.primary.main, // Consistent use of primary color
+  fontWeight: "bold",
+}));
+
+// Styled component for the candidate card
+const CandidateCard = styled(Card)(({ theme }) => ({
+  maxWidth: 345,
+  borderRadius: theme.spacing(2),
+  boxShadow: theme.shadows[3],
+  transition: "transform 0.2s ease-in-out", // Smooth transition for hover effect
+  "&:hover": {
+    transform: "scale(1.05)", // Slight scale up on hover
+  },
+}));
+
 const Election = () => {
-  const [durationHours, setDurationHours] = useState(""); // Duration input in hours
-  const [remainingTime, setRemainingTime] = useState(null); // Countdown timer in seconds
-  const [candidates, setCandidates] = useState([]); // List of candidates
-  const [loading, setLoading] = useState(false); // Loading state for API calls
-  const [adminAddress, setAdminAddress] = useState(""); // Admin address from MetaMask
-  const [isRequesting, setIsRequesting] = useState(false); // MetaMask request state
-  const [electionStatus, setElectionStatus] = useState(null); // To store election status
+  const [durationHours, setDurationHours] = useState("");
+  const [remainingTime, setRemainingTime] = useState(null);
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [adminAddress, setAdminAddress] = useState("");
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [electionStatus, setElectionStatus] = useState(null);
 
   useEffect(() => {
     fetchCandidates();
@@ -42,6 +74,7 @@ const Election = () => {
     } catch (error) {
       console.error("Error fetching candidates:", error);
       setLoading(false);
+      toast.error("Failed to load candidates."); // User-friendly error message
     }
   };
 
@@ -56,6 +89,7 @@ const Election = () => {
       setRemainingTime(isVotingActive ? parseInt(timeRemaining, 10) : null);
     } catch (error) {
       console.error("Error fetching election status:", error);
+      toast.error("Failed to fetch election status."); // User-friendly error message
     }
   };
 
@@ -176,12 +210,12 @@ const Election = () => {
   };
 
   return (
-    <Box sx={{ padding: 4, backgroundColor: "#f5f5f5", borderRadius: 2 }}>
-      <Paper sx={{ padding: 3, boxShadow: 3, borderRadius: 2 }}>
-        <Typography variant="h4" gutterBottom align="center" fontWeight="bold">
+    <ElectionContainer>
+      <ElectionPaper>
+        <Typography variant="h4" gutterBottom align="center" fontWeight="bold" color="primary">
           Election Admin Panel
         </Typography>
-        <Typography variant="h6" gutterBottom align="center">
+        <Typography variant="h6" gutterBottom align="center" color="textSecondary">
           Manage and Monitor Election Status
         </Typography>
         <Divider sx={{ marginBottom: 2 }} />
@@ -225,43 +259,41 @@ const Election = () => {
         </Box>
 
         <Divider sx={{ marginY: 3 }} />
-        <Typography variant="h5" gutterBottom>
-          Candidates
-        </Typography>
+        <SectionTitle>Candidates</SectionTitle>
         {loading ? (
           <CircularProgress />
         ) : (
           <Grid container spacing={3}>
             {candidates.map((candidate) => (
               <Grid item xs={12} sm={6} md={4} key={candidate._id}>
-                <Card sx={{ maxWidth: 345, borderRadius: 2, boxShadow: 3 }}>
-                <CardMedia
-  component="img"
-  height="200" // Increased the height for better visibility
-  image={candidate.photoUrl || "/path/to/placeholder.jpg"} // Fallback to a placeholder image if photoUrl is unavailable
-  alt={candidate.name}
-  sx={{
-    objectFit: "cover", // Ensures the image fills the space without distorting
-    borderRadius: "8px 8px 0 0",
-    boxShadow: 2, // Subtle shadow around the image
-  }}
-/>
-
+                <CandidateCard>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={candidate.photoUrl || "/path/to/placeholder.jpg"}
+                    alt={candidate.name}
+                    sx={{
+                      objectFit: "cover",
+                      borderRadius: "8px 8px 0 0",
+                      boxShadow: 2,
+                    }}
+                  />
                   <CardContent>
-                    <Typography variant="h6" fontWeight="bold">{candidate.name}</Typography>
-                    <Typography color="text.secondary">{candidate.party}</Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
+                    <Typography variant="h6" fontWeight="bold" color="primary">{candidate.name}</Typography>
+                    <Typography color="textSecondary">{candidate.party}</Typography>
+                    <Typography variant="body2" color="textSecondary" noWrap>
                       {candidate.description}
                     </Typography>
                   </CardContent>
-                </Card>
+                </CandidateCard>
               </Grid>
             ))}
           </Grid>
         )}
-      </Paper>
-    </Box>
+      </ElectionPaper>
+    </ElectionContainer>
   );
 };
 
 export default Election;
+

@@ -10,3 +10,4 @@ const voterSchema = new mongoose.Schema({
 const Voter = mongoose.model("Voter", voterSchema);
 
 export default Voter;
+
