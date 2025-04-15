@@ -12,6 +12,30 @@ import {
   Divider,
 } from '@mui/material';
 import { FaRegCalendarAlt, FaVoteYea } from 'react-icons/fa';
+import { styled } from '@mui/material/styles';
+
+// Styled components for enhanced UI
+const StyledCard = styled(Card)(({ theme }) => ({
+  boxShadow: theme.shadows[5],
+  background: 'linear-gradient(135deg, #1a1a2e, #16213e)',
+  color: '#ffffff',
+  transition: 'transform 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+}));
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: '5px',
+  },
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: '#f0a500',
+  fontWeight: 'bold',
+}));
 
 // Helper function to convert Unix timestamp to readable date
 const formatDate = (timestamp) => {
@@ -47,57 +71,57 @@ const Results = () => {
 
   if (loading) {
     return (
-      <Typography variant="h6" align="center" sx={{ marginTop: 3 }}>
+      <StyledTypography variant="h6" align="center" sx={{ marginTop: 3 }}>
         Loading results...
-      </Typography>
+      </StyledTypography>
     );
   }
 
   if (error) {
     return (
-      <Typography variant="h6" align="center" sx={{ marginTop: 3, color: 'red' }}>
+      <StyledTypography variant="h6" align="center" sx={{ marginTop: 3, color: 'red' }}>
         {error}
-      </Typography>
+      </StyledTypography>
     );
   }
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Box sx={{ padding: 3, backgroundColor: '#0f0f0f', minHeight: '100vh' }}>
+      <StyledTypography variant="h4" align="center" gutterBottom>
         Previous Voting Sessions
-      </Typography>
+      </StyledTypography>
       <Grid container spacing={3}>
         {resultsData.map((session, index) => (
           <Grid item xs={12} md={6} key={index}>
-            <Card sx={{ boxShadow: 3 }}>
+            <StyledCard>
               <CardContent>
-                <Typography
+                <StyledTypography
                   variant="h6"
                   gutterBottom
                   sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                 >
                   <FaRegCalendarAlt /> Ended On: {formatDate(session.endTime)}
-                </Typography>
-                <Divider sx={{ marginY: 2 }} />
-                <Typography variant="body1" gutterBottom>
+                </StyledTypography>
+                <Divider sx={{ marginY: 2, backgroundColor: '#f0a500' }} />
+                <Typography variant="body1" gutterBottom sx={{ color: '#ffffff' }}>
                   <strong>Results:</strong>
                 </Typography>
                 <List>
                   {session.candidates.map((candidate, i) => (
-                    <ListItem key={i} sx={{ padding: 0 }}>
+                    <StyledListItem key={i} sx={{ padding: 1 }}>
                       <ListItemText
                         primary={`${candidate}: ${session.votes[i]} vote(s)`}
-                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#ffffff' }}
                         primaryTypographyProps={{
                           variant: 'body1',
                         }}
                       />
-                      <FaVoteYea color="#3f51b5" />
-                    </ListItem>
+                      <FaVoteYea color="#f0a500" />
+                    </StyledListItem>
                   ))}
                 </List>
               </CardContent>
-            </Card>
+            </StyledCard>
           </Grid>
         ))}
       </Grid>

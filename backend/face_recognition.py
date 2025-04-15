@@ -18,7 +18,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 MONGO_URI = os.getenv("MONGO_URI")
 client = pymongo.MongoClient(MONGO_URI)
 db = client["voting"]
-users_collection = db["users"]
+users_collection = db["facedata"]
 
 # Load Face Recognition Model
 face_app = FaceAnalysis(name="buffalo_l")
@@ -92,7 +92,7 @@ def login():
     similarity = np.dot(stored_embedding, input_embedding) / (np.linalg.norm(stored_embedding) * np.linalg.norm(input_embedding))
 
     if similarity > 0.8:
-        return jsonify({"message": "✅ Login successful!"}), 200
+        return jsonify({"message": "✅ Authentication successful!"}), 200
     else:
         return jsonify({"error": "❌ Face does not match"}), 401
 

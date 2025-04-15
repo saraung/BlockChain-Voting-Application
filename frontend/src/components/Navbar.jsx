@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Drawer,
   List,
@@ -19,7 +15,7 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { logout } from "../redux/auth/authSlice"; // Assuming you have a logout action
+import { logout } from "../redux/auth/authSlice";
 import { toast } from "react-toastify";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -28,7 +24,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userInfo } = useSelector((state) => state.auth); // Get userInfo from Redux
+  const { userInfo } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenuOpen = (event) => {
@@ -73,7 +69,6 @@ const Navbar = () => {
         </Typography>
       </Toolbar>
       <List>
-        {/* Always visible links */}
         <ListItem
           component={Link}
           to="/"
@@ -81,138 +76,92 @@ const Navbar = () => {
           selected={location.pathname === "/"}
           sx={{
             color: "white",
-            "&.Mui-selected": {
-              backgroundColor: "#ff5722",
-              color: "#ffffff",
-            },
-            "&:hover": {
-              backgroundColor: "#333547",
-            },
+            "&.Mui-selected": { backgroundColor: "#ff5722", color: "#ffffff" },
+            "&:hover": { backgroundColor: "#333547" },
           }}
         >
           <ListItemText primary="Home" />
         </ListItem>
-        {!userInfo && (
-  <ListItem
-    component={Link}
-    to="/login"
-    button
-    selected={location.pathname === "/login"}
-    sx={{
-      color: "white",
-      "&.Mui-selected": {
-        backgroundColor: "#ff5722",
-        color: "#ffffff",
-      },
-      "&:hover": {
-        backgroundColor: "#333547",
-      },
-    }}
-  >
-    <ListItemText primary="Login" />
-  </ListItem>
-)}
 
-        <ListItem
-          component={Link}
-          to="/results"
-          button
-          selected={location.pathname === "/results"}
-          sx={{
-            color: "white",
-            "&.Mui-selected": {
-              backgroundColor: "#ff5722",
-              color: "#ffffff",
-            },
-            "&:hover": {
-              backgroundColor: "#333547",
-            },
-          }}
-        >
-          <ListItemText primary="Voting Results" />
-        </ListItem>
-        {userInfo && (
+        {!userInfo && (
+          <ListItem
+            component={Link}
+            to="/login"
+            button
+            selected={location.pathname === "/login"}
+            sx={{
+              color: "white",
+              "&.Mui-selected": { backgroundColor: "#ff5722", color: "#ffffff" },
+              "&:hover": { backgroundColor: "#333547" },
+            }}
+          >
+            <ListItemText primary="Login" />
+          </ListItem>
+        )}
+
+        {userInfo && !userInfo.isAdmin && (
+          <ListItem
+            component={Link}
+            to="/face"
+            button
+            selected={location.pathname === "/face"}
+            sx={{
+              color: "white",
+              "&.Mui-selected": { backgroundColor: "#ff5722", color: "#ffffff" },
+              "&:hover": { backgroundColor: "#333547" },
+            }}
+          >
+            <ListItemText primary="Cast Votes" />
+          </ListItem>
+        )}
+
+        {userInfo?.isAdmin && (
           <>
             <ListItem
               component={Link}
-              to="/face"
+              to="/results"
               button
-              selected={location.pathname === "/face"}
+              selected={location.pathname === "/results"}
               sx={{
                 color: "white",
-                "&.Mui-selected": {
-                  backgroundColor: "#ff5722",
-                  color: "#ffffff",
-                },
-                "&:hover": {
-                  backgroundColor: "#333547",
-                },
+                "&.Mui-selected": { backgroundColor: "#ff5722", color: "#ffffff" },
+                "&:hover": { backgroundColor: "#333547" },
               }}
             >
-              <ListItemText primary="Cast Votes" />
+              <ListItemText primary="Voting Results" />
             </ListItem>
-            {/* <ListItem
+
+            <ListItem
               component={Link}
-              to="/voters"
+              to="/election"
               button
-              selected={location.pathname === "/voters"}
+              selected={location.pathname === "/election"}
               sx={{
                 color: "white",
-                "&.Mui-selected": {
-                  backgroundColor: "#ff5722",
-                  color: "#ffffff",
-                },
-                "&:hover": {
-                  backgroundColor: "#333547",
-                },
+                "&.Mui-selected": { backgroundColor: "#ff5722", color: "#ffffff" },
+                "&:hover": { backgroundColor: "#333547" },
               }}
             >
-              <ListItemText primary="Manage Voters" />
-            </ListItem> */}
-            {userInfo.isAdmin && (
-              <>
-              <ListItem
-                component={Link}
-                to="/election"
-                button
-                selected={location.pathname === "/election"}
-                sx={{
-                  color: "white",
-                  "&.Mui-selected": {
-                    backgroundColor: "#ff5722",
-                    color: "#ffffff",
-                  },
-                  "&:hover": {
-                    backgroundColor: "#333547",
-                  },
-                }}
-              >
-                <ListItemText primary="Start Election" />
-              </ListItem>
-              <ListItem
-                component={Link}
-                to="/candidates"
-                button
-                selected={location.pathname === "/candidates"}
-                sx={{
-                  color: "white",
-                  "&.Mui-selected": {
-                    backgroundColor: "#ff5722",
-                    color: "#ffffff",
-                  },
-                  "&:hover": {
-                    backgroundColor: "#333547",
-                  },
-                }}
-              >
-                <ListItemText primary="Manage Candidates" />
-              </ListItem>
-              </>
-            )}
+              <ListItemText primary="Start Election" />
+            </ListItem>
+
+            <ListItem
+              component={Link}
+              to="/candidates"
+              button
+              selected={location.pathname === "/candidates"}
+              sx={{
+                color: "white",
+                "&.Mui-selected": { backgroundColor: "#ff5722", color: "#ffffff" },
+                "&:hover": { backgroundColor: "#333547" },
+              }}
+            >
+              <ListItemText primary="Manage Candidates" />
+            </ListItem>
           </>
         )}
       </List>
-      {/* User Avatar and Dropdown */}
+
       {userInfo && (
         <Box
           sx={{
@@ -224,26 +173,15 @@ const Navbar = () => {
             gap: 2,
           }}
         >
-          <Avatar
-            alt={userInfo.name || "User"}
-            src="/static/images/avatar-placeholder.png" // Replace with user profile picture URL if available
-          />
+          <Avatar alt={userInfo.name || "User"} src="/static/images/avatar-placeholder.png" />
           <Box>
             <Typography variant="body1">{userInfo.name}</Typography>
             <Typography variant="body2">{userInfo.email}</Typography>
           </Box>
-          <IconButton
-            onClick={handleMenuOpen}
-            sx={{ color: "white", ml: "auto" }}
-          >
+          <IconButton onClick={handleMenuOpen} sx={{ color: "white", ml: "auto" }}>
             <MoreVertIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
             <MenuItem onClick={handleLogout}>
               <LogoutIcon sx={{ mr: 1 }} />
               Logout

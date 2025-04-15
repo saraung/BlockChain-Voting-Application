@@ -13,10 +13,15 @@ import { ToastContainer } from 'react-toastify';
 import Candidates from './pages/Admin/Candidates';
 import Voters from './pages/User/Voters';
 import FaceAuth from './pages/User/FaceAuth';
+import { Face } from '@mui/icons-material';
+import FaceLogin from './pages/User/Face';
 
 function App() {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box
+    
+    sx={{
+      display: 'flex',margin:0 }}>
       {/* Sidebar */}
       <NavBar />
       <ToastContainer/>
@@ -27,7 +32,7 @@ function App() {
         component="main"
         sx={{
           flexGrow: 1,
-          padding: 3,
+          padding: 0,
           marginLeft: '0px', // Adjust based on the NavBar width
         }}
       >
@@ -46,7 +51,8 @@ function App() {
   {/* User Routes: accessible only by authenticated users */}
   <Route element={<PrivateRoute />}>
     <Route path="/vote" element={<Vote />} />
-    <Route path="/face" element={<FaceAuth />} />
+    <Route path="/face" element={<FaceLogin/>} />
+    <Route path="/facetrial" element={<FaceAuth />} />
     <Route path="/voters" element={<Voters />} />
   </Route>
 </Routes>
