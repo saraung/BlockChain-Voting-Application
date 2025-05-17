@@ -6,7 +6,7 @@ import Web3 from 'web3';
 
 
 // Connect to Alchemy using the URL from the environment variables
-const web3 = new Web3(process.env.ALCHEMY_URL);
+const web3 = new Web3(process.env.GANACHE_RPC_URL);
 
 // Define a function to get the latest block number (for testing)
 export const getLatestBlock = async () => {
